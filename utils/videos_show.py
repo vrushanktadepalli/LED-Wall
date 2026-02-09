@@ -3,8 +3,10 @@ import time
 
 import cv2
 import numpy as np
+from env import HEIGHT, WIDTH, clear_leds, strip
 from rpi_ws281x import Color
-from env import HEIGHT, WIDTH, strip
+
+
 def resize_with_aspect_ratio(frame, target_width, target_height):
     h, w = frame.shape[:2]
     aspect_ratio = w / h
@@ -34,7 +36,7 @@ def display_frame(frame):
             strip.setPixelColor(idx, Color(r, g, b))
     strip.show()
 
-def play_video(path):
+def display_video(path):
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
         print(f"Error: Couldn't open video {path}")
@@ -65,18 +67,16 @@ def cycle_videos(video_folder):
     
     for video in video_files:
         print(f"Playing {video}")
-        play_video(os.path.join(video_folder, video))
+        display_video(os.path.join(video_folder, video))
 
 def main():
-    video_folder = "/home/pi/proj/videos"
+    video_folder = os.path.join(os.path.dirname(__file__), '..', 'assets', 'videos')
     try:
         while True:
             cycle_videos(video_folder)
     except KeyboardInterrupt:
-        print("Exiting videoshow.py")
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, Color(0, 0, 0))
-            strip.show()
+        print("Stopped")
+        clear_leds()
 
 if __name__ == "__main__":
     main()

@@ -1,10 +1,9 @@
 import os
 import time
 
+from env import HEIGHT, WIDTH, clear_leds, strip
 from PIL import Image, ImageSequence
 from rpi_ws281x import Color
-
-from env import HEIGHT, WIDTH, strip
 
 # Matrix configuration
 
@@ -78,13 +77,15 @@ def cycle_gifs(folder):
         gif_path = os.path.join(folder, gif_file)
         display_gif(gif_path)
 
-if __name__ == "__main__":
+def main():
+    gif_folder = os.path.join(os.path.dirname(__file__), '..', 'assets', 'gifs')
     try:
         while True:
-            cycle_gifs('/home/pi/proj/gifs')  # Folder containing .gif files
+            cycle_gifs(gif_folder)  # Folder containing .gif files
     except KeyboardInterrupt:
         print("Program interrupted.")
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, Color(0, 0, 0))
-            strip.show()
+        clear_leds()
+
+if __name__ == "__main__":
+    main()
     

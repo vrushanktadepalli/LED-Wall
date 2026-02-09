@@ -1,9 +1,8 @@
 import math
 import time
 
-from rpi_ws281x import Color
-
 from env import HEIGHT, WIDTH, strip
+from rpi_ws281x import Color
 
 DEFAULT_COLOR = (255, 255, 255)
 # Font dictionary (minimal example, complete it as needed)
@@ -133,6 +132,7 @@ def apply_color(bitmap, color):
     return [[color if pixel else (0, 0, 0) for pixel in row] for row in bitmap]
 
 def scroll_left(text, color=DEFAULT_COLOR, speed=0.112):
+    '''PLays a Text scrolling Left'''
     bitmap = make_text_bitmap(text)
 
     # Vertically pad bitmap to fit HEIGHT
@@ -157,6 +157,7 @@ def scroll_left(text, color=DEFAULT_COLOR, speed=0.112):
         time.sleep(speed)
 
 def scroll_right(text, color=DEFAULT_COLOR, speed=0.112):
+    '''PLays a Text scrolling Right'''
     bitmap = make_text_bitmap(text)
     
     vertical_pad = HEIGHT - len(bitmap)
@@ -179,6 +180,7 @@ def scroll_right(text, color=DEFAULT_COLOR, speed=0.112):
         time.sleep(speed)
 
 def scroll_up(text, color=DEFAULT_COLOR, speed=0.112):
+    '''PLays a Text scrolling Up'''
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
     text_width = len(bitmap[0]) if bitmap else 0
@@ -206,6 +208,7 @@ def scroll_up(text, color=DEFAULT_COLOR, speed=0.112):
         time.sleep(speed)
 
 def scroll_down(text, color=DEFAULT_COLOR, speed=0.112):
+    '''PLays a Text scrolling Down'''
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
     text_width = len(bitmap[0]) if bitmap else 0
@@ -233,6 +236,7 @@ def scroll_down(text, color=DEFAULT_COLOR, speed=0.112):
         time.sleep(speed)
 
 def blink_text(text, color=DEFAULT_COLOR, blink_times=5, on_duration=0.4, off_duration=0.2):
+    '''PLays a Text blinking'''
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
     text_width = len(bitmap[0]) if bitmap else 0
@@ -256,6 +260,7 @@ def blink_text(text, color=DEFAULT_COLOR, blink_times=5, on_duration=0.4, off_du
         time.sleep(off_duration)
 
 def typewriter_text(text, color=DEFAULT_COLOR, speed=0.1):
+    '''PLays a Text with a typewriter effect'''
     bitmap = make_text_bitmap(text)
     frame = [[(0, 0, 0) for _ in range(WIDTH)] for _ in range(HEIGHT)]
     text_height = len(bitmap)
@@ -275,6 +280,7 @@ def typewriter_text(text, color=DEFAULT_COLOR, speed=0.1):
     time.sleep(0.4)
 
 def wave_text(text, color=DEFAULT_COLOR, delay=0.06, amplitude=2, wavelength=2, cycles=3):
+    '''PLays a Text with a wave effect'''
     char_height = 7
     char_width = 6  # 5 + 1 space
     bitmap = make_text_bitmap(text)  # Returns 7 x W bitmap
@@ -310,7 +316,7 @@ def wave_text(text, color=DEFAULT_COLOR, delay=0.06, amplitude=2, wavelength=2, 
 
 def display_text(text, color=DEFAULT_COLOR):
     """
-    Display the given text statically, centered on the LED matrix.
+    Display the given text
     """
     bitmap = make_text_bitmap(text)
 
@@ -353,13 +359,13 @@ def display_text(text, color=DEFAULT_COLOR):
 if __name__ == "__main__":
     try:
         while True:
-            # scroll_left("Left", color=(255, 0, 0), speed=0.07)
-            # scroll_right("Right", color=(0, 255, 0), speed=0.07)
-            # scroll_up("Up", color=(0, 0, 255), speed=0.2)
-            # scroll_down("Down", color=(255, 255, 0), speed=0.2)
-            # blink_text("Blink", color=(0, 255, 255))
-            # typewriter_text("Type", color=(255, 0, 255))
-            # wave_text("Wave", color=(255, 127, 0))
+            scroll_left("Left", color=(255, 0, 0), speed=0.07)
+            scroll_right("Right", color=(0, 255, 0), speed=0.07)
+            scroll_up("Up", color=(0, 0, 255), speed=0.2)
+            scroll_down("Down", color=(255, 255, 0), speed=0.2)
+            blink_text("Blink", color=(0, 255, 255))
+            typewriter_text("Type", color=(255, 0, 255))
+            wave_text("Wave", color=(255, 127, 0))
             display_text("H3110")
     except KeyboardInterrupt:
         clear()

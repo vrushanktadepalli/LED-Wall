@@ -1,9 +1,8 @@
 import random
 import time
 
+from env import HEIGHT, WIDTH, clear_leds, strip
 from rpi_ws281x import Color
-
-from env import HEIGHT, WIDTH, strip
 
 
 # --- Helper: 2D → 1D (zigzag mapping) ---
@@ -221,15 +220,15 @@ def hsv_to_rgb(h, s, v):
     r, g, b = colorsys.hsv_to_rgb(h, s, v)
     return int(r * 255), int(g * 255), int(b * 255)
 
-if __name__ == "__main__":
-    print("Starting Matrix Rain... Press Ctrl+C to stop.")
+
+def main():
     try:
         while True:
             matrix_rain()
             dvd5px()
             spiral()
     except KeyboardInterrupt:
-        # Clear LEDs on exit
-        for i in range(HEIGHT * WIDTH):
-            strip.setPixelColor(i, Color(0, 0, 0))
-        strip.show()
+        clear_leds()
+
+if __name__ == "__main__":
+    main()

@@ -4,7 +4,7 @@ import time
 from PIL import Image
 from rpi_ws281x import Color
 
-from env import HEIGHT, WIDTH, strip
+from env import HEIGHT, WIDTH, strip, clear_leds
 
 # Initialize LED strip
 
@@ -54,16 +54,18 @@ def display_image(image_path, delay_time=3):
     strip.show()
     time.sleep(delay_time)
 
-def cycle_images_once(folder='images', delay_time=2):
+def cycle_images(folder, delay_time=2):
     for fname in sorted(os.listdir(folder)):
         if fname.lower().endswith(('.png', '.jpg', '.jpeg')):
             display_image(os.path.join(folder, fname), delay_time)
 
-if __name__ == "__main__":
+def main():
+    image_folder = os.path.join(os.path.dirname(__file__), '..', 'assets', 'images')
     try:
-        cycle_images_once()
+        cycle_images(image_folder)
     except KeyboardInterrupt:
         print("Stopped.")
-        for i in range(strip.numPixels()):
-            strip.setPixelColor(i, Color(0, 0, 0))
-            strip.show()
+        clear_leds()
+
+if __name__ == "__main__":
+    main()
