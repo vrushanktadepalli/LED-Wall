@@ -44,6 +44,13 @@ def set_brightness(value: int) -> None:
 
 set_brightness(LED_BRIGHTNESS)
 
+def run_once(fn: Callable) -> None:
+    try:
+        fn()
+        clear_leds()
+    except KeyboardInterrupt:
+        clear_leds()
+
 def run_forever(fn: Callable) -> None:
     try:
         while True:
