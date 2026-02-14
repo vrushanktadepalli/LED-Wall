@@ -4,7 +4,7 @@ import time
 from PIL import Image
 from rpi_ws281x import Color
 
-from env import HEIGHT, WIDTH, strip, clear_leds
+from env import HEIGHT, WIDTH, clear_leds, image, strip
 
 # Initialize LED strip
 
@@ -45,7 +45,8 @@ def zigzag_order(pixels, width, height):
 def to_grb_color(r, g, b):
     return Color(g, r, b)
 
-def display_image(image_path, delay_time=3):
+def display_image(image_name, delay_time=3):
+    image_path = image(image_name)
     print(f"Displaying: {os.path.basename(image_path)}")
     pixels = process_image(image_path, brightness_factor=0.6)
     zigzag = zigzag_order(pixels, WIDTH, HEIGHT)
@@ -54,7 +55,7 @@ def display_image(image_path, delay_time=3):
     strip.show()
     time.sleep(delay_time)
 
-def cycle_images(folder, delay_time=2):
+def cycle_images(folder=os.path.join(os.path.dirname(__file__), '..', 'assets', 'images'), delay_time=2):
     for fname in sorted(os.listdir(folder)):
         if fname.lower().endswith(('.png', '.jpg', '.jpeg')):
             display_image(os.path.join(folder, fname), delay_time)

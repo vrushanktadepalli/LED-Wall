@@ -1,9 +1,10 @@
 import os
 import time
 
-from env import HEIGHT, WIDTH, clear_leds, strip
 from PIL import Image, ImageSequence
 from rpi_ws281x import Color
+
+from env import HEIGHT, WIDTH, clear_leds, gif, strip
 
 # Matrix configuration
 
@@ -57,8 +58,9 @@ def load_gif_frames(gif_path):
 
     return frames
 
-def display_gif(gif_path, frame_duration=0.1):
+def display_gif(gif_name, frame_duration=0.1):
     """Display a GIF file on the LED matrix."""
+    gif_path = gif(gif_name)
     frames = load_gif_frames(gif_path)
     print(f"Displaying GIF: {os.path.basename(gif_path)} with {len(frames)} frames")
         
@@ -68,20 +70,18 @@ def display_gif(gif_path, frame_duration=0.1):
         display_frame(frames[i % len(frames)])
         time.sleep(frame_duration)
 
-def cycle_gifs(folder):
+def cycle_gifs(folder=os.path.join(os.path.dirname(__file__), '..', 'assets', 'gifs')):
     """Cycle through all GIFs in a folder."""
     gif_files = [f for f in os.listdir(folder) if f.lower().endswith('.gif')]
     print(f"Found {len(gif_files)} GIF(s) in folder: {folder}")
     
     for gif_file in gif_files:
-        gif_path = os.path.join(folder, gif_file)
-        display_gif(gif_path)
+        display_gif(gif_file)
 
 def main():
-    gif_folder = os.path.join(os.path.dirname(__file__), '..', 'assets', 'gifs')
     try:
         while True:
-            cycle_gifs(gif_folder)  # Folder containing .gif files
+            cycle_gifs()  # Folder containing .gif files
     except KeyboardInterrupt:
         print("Program interrupted.")
         clear_leds()

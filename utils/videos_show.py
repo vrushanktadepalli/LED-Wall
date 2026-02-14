@@ -3,8 +3,9 @@ import time
 
 import cv2
 import numpy as np
-from env import HEIGHT, WIDTH, clear_leds, strip
 from rpi_ws281x import Color
+
+from env import HEIGHT, WIDTH, clear_leds, strip, video
 
 
 def resize_with_aspect_ratio(frame, target_width, target_height):
@@ -36,10 +37,11 @@ def display_frame(frame):
             strip.setPixelColor(idx, Color(r, g, b))
     strip.show()
 
-def display_video(path):
-    cap = cv2.VideoCapture(path)
+def display_video(video_name):
+    video_path = video(video_name)
+    cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        print(f"Error: Couldn't open video {path}")
+        print(f"Error: Couldn't open video {video_path}")
         return
 
     while True:
@@ -59,7 +61,7 @@ def display_video(path):
     cap.release()
 
 
-def cycle_videos(video_folder):
+def cycle_videos(video_folder=os.path.join(os.path.dirname(__file__), '..', 'assets', 'videos')):
     video_files = [f for f in os.listdir(video_folder) if f.lower().endswith(".mp4")]
     if not video_files:
         print("No video files found in 'videos/' folder.")
