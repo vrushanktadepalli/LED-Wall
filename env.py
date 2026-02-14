@@ -51,9 +51,11 @@ def run_once(fn: Callable) -> None:
     except KeyboardInterrupt:
         clear_leds()
 
-def run_forever(fn: Callable) -> None:
+def run_forever(fn: Callable, endfn: None|Callable = None) -> None:
     try:
         while True:
             fn()
     except KeyboardInterrupt:
+        if endfn is not None:
+            run_once(endfn)
         clear_leds()
