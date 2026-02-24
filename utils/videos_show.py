@@ -3,9 +3,8 @@ import time
 
 import cv2
 import numpy as np
-from rpi_ws281x import Color
 
-from env import HEIGHT, WIDTH, clear_leds, strip, video
+from env import HEIGHT, WIDTH, Color, clear_leds, strip, video
 
 
 def resize_with_aspect_ratio(frame, target_width, target_height):
@@ -21,12 +20,14 @@ def resize_with_aspect_ratio(frame, target_width, target_height):
 
     return cv2.resize(frame, (new_width, new_height))
 
+
 def zigzag_index(x, y):
     """Convert (x, y) to LED index in zigzag layout (top-left origin)."""
     if y % 2 == 0:
         return y * WIDTH + x
     else:
         return y * WIDTH + (WIDTH - 1 - x)
+
 
 def display_frame(frame):
     """Send a 32x16 image to the LED matrix."""
@@ -36,6 +37,7 @@ def display_frame(frame):
             idx = zigzag_index(x, y)
             strip.setPixelColor(idx, Color(r, g, b))
     strip.show()
+
 
 def display_video(video_name):
     video_path = video(video_name)
@@ -55,30 +57,37 @@ def display_video(video_name):
         y_offset = (HEIGHT - resized.shape[0]) // 2
         x_offset = (WIDTH - resized.shape[1]) // 2
 
-        canvas[y_offset:y_offset + resized.shape[0], x_offset:x_offset + resized.shape[1]] = resized
+        canvas[
+            y_offset : y_offset + resized.shape[0],
+            x_offset : x_offset + resized.shape[1],
+        ] = resized
         display_frame(canvas)
 
     cap.release()
 
 
-def cycle_videos(video_folder=os.path.join(os.path.dirname(__file__), '..', 'assets', 'videos')):
+def cycle_videos(
+    video_folder=os.path.join(os.path.dirname(__file__), "..", "assets", "videos")
+):
     video_files = [f for f in os.listdir(video_folder) if f.lower().endswith(".mp4")]
     if not video_files:
         print("No video files found in 'videos/' folder.")
         return
-    
+
     for video in video_files:
         print(f"Playing {video}")
         display_video(os.path.join(video_folder, video))
 
+
 def main():
-    video_folder = os.path.join(os.path.dirname(__file__), '..', 'assets', 'videos')
+    video_folder = os.path.join(os.path.dirname(__file__), "..", "assets", "videos")
     try:
         while True:
             cycle_videos(video_folder)
     except KeyboardInterrupt:
         print("Stopped")
         clear_leds()
+
 
 if __name__ == "__main__":
     main()

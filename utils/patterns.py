@@ -1,8 +1,7 @@
 import random
 import time
 
-from env import HEIGHT, WIDTH, clear_leds, strip
-from rpi_ws281x import Color
+from env import HEIGHT, WIDTH, Color, clear_leds, strip
 
 
 # --- Helper: 2D → 1D (zigzag mapping) ---
@@ -16,6 +15,7 @@ def convert_2d_to_1d(frame_2d):
             for x in reversed(range(WIDTH)):
                 leds.append(frame_2d[y][x])
     return leds
+
 
 # --- Matrix Rain Effect ---
 def matrix_rain(strip=strip, frames=250, delay=0.05):
@@ -54,12 +54,15 @@ def matrix_rain(strip=strip, frames=250, delay=0.05):
         strip.show()
 
         time.sleep(delay)
+
+
 def xy_to_index(x, y):
     """Map 2D XY -> linear index (zigzag wiring assumed)."""
     if y % 2 == 0:  # even row → left to right
         return y * WIDTH + x
-    else:           # odd row → right to left
+    else:  # odd row → right to left
         return y * WIDTH + (WIDTH - 1 - x)
+
 
 def fill_square(matrix, pos_x, pos_y, color):
     """Draw a 5x5 block into matrix (clip inside bounds)."""
@@ -70,10 +73,12 @@ def fill_square(matrix, pos_x, pos_y, color):
             if 0 <= px < WIDTH and 0 <= py < HEIGHT:
                 matrix[py][px] = color
 
+
 def clear_matrix(matrix):
     for y in range(HEIGHT):
         for x in range(WIDTH):
             matrix[y][x] = (0, 0, 0)
+
 
 def matrix_to_strip(matrix, strip):
     """Push 2D matrix → rpi_ws281x strip."""
@@ -82,6 +87,7 @@ def matrix_to_strip(matrix, strip):
             r, g, b = matrix[y][x]
             strip.setPixelColor(xy_to_index(x, y), Color(r, g, b))
     strip.show()
+
 
 def dvd5px(strip=strip):
     # Start with black frame
@@ -128,10 +134,12 @@ def dvd5px(strip=strip):
         # Erase previous square
         fill_square(frame, prev_x, prev_y, [0, 0, 0])
         # Draw new square with changing color
-        fill_square(frame, pos_x, pos_y, 
-                    [int(t * 5 % 255), 
-                     int((255 - (t * 3 % 255))), 
-                     int(200)])
+        fill_square(
+            frame,
+            pos_x,
+            pos_y,
+            [int(t * 5 % 255), int((255 - (t * 3 % 255))), int(200)],
+        )
 
         # Convert to 1D + show
         leds = convert_2d_to_1d(frame)
@@ -140,6 +148,7 @@ def dvd5px(strip=strip):
         strip.show()
 
         time.sleep(0.05)
+
 
 def spiral(strip=strip, LED_WIDTH=WIDTH, LED_HEIGHT=HEIGHT, delay_ms=5):
     # Create a 2D buffer for the LEDs
@@ -152,7 +161,7 @@ def spiral(strip=strip, LED_WIDTH=WIDTH, LED_HEIGHT=HEIGHT, delay_ms=5):
         # Top row (left → right)
         for x in range(left, right + 1):
             hue = int(((x + top) / hue_max) * 255) % 255
-            frame[top][x] = hsv_to_rgb(hue, 255,255)
+            frame[top][x] = hsv_to_rgb(hue, 255, 255)
             leds = convert_2d_to_1d(frame)
             for i, c in enumerate(leds):
                 strip.setPixelColor(i, Color(*c))
@@ -210,6 +219,7 @@ def spiral(strip=strip, LED_WIDTH=WIDTH, LED_HEIGHT=HEIGHT, delay_ms=5):
         strip.setPixelColor(i, Color(0, 0, 0))
     strip.show()
 
+
 def hsv_to_rgb(h, s, v):
     import colorsys
 
@@ -229,6 +239,7 @@ def main():
             spiral()
     except KeyboardInterrupt:
         clear_leds()
+
 
 if __name__ == "__main__":
     main()
