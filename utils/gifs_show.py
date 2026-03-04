@@ -5,8 +5,7 @@ from PIL import Image, ImageSequence
 
 from env import HEIGHT, WIDTH, Color, clear_leds, gif, strip
 
-# Matrix configuration
-
+default_gif_folder = os.path.join(os.path.dirname(__file__), "..", "assets", "gifs")
 
 def resize_and_center_frame(frame):
     """Resize and center a frame on a black canvas matching matrix size."""
@@ -31,18 +30,22 @@ def resize_and_center_frame(frame):
 
 def zigzag_order(pixels, width, height):
     """Map 2D pixels to zigzag 1D LED strip layout."""
+
     result = []
+
     for y in range(height):
         row = pixels[y * width : (y + 1) * width]
         if y % 2 == 0:
             result.extend(row)
         else:
             result.extend(row[::-1])
+            
     return result
 
 
 def display_frame(pixels):
     """Display a list of RGB tuples on the LED matrix."""
+
     for i, (r, g, b) in enumerate(pixels):
         strip.setPixelColor(i, Color(g, r, b))
     strip.show()
@@ -50,6 +53,7 @@ def display_frame(pixels):
 
 def load_gif_frames(gif_path):
     """Extract and process all frames from a GIF."""
+
     img = Image.open(gif_path)
     frames = []
 
@@ -63,19 +67,22 @@ def load_gif_frames(gif_path):
 
 def display_gif(gif_name, frame_duration=0.1):
     """Display a GIF file on the LED matrix."""
+
     gif_path = gif(gif_name)
     frames = load_gif_frames(gif_path)
     print(f"Displaying GIF: {os.path.basename(gif_path)} with {len(frames)} frames")
 
     loops = int(max(5 / frame_duration, len(frames)))  # Play for at least 5 seconds
     print(f"Looping GIF for approximately {loops * frame_duration:.1f} seconds")
+
     for i in range(loops):
         display_frame(frames[i % len(frames)])
         time.sleep(frame_duration)
 
 
-def cycle_gifs(folder=os.path.join(os.path.dirname(__file__), "..", "assets", "gifs")):
+def cycle_gifs(folder=default_gif_folder):
     """Cycle through all GIFs in a folder."""
+
     gif_files = [f for f in os.listdir(folder) if f.lower().endswith(".gif")]
     print(f"Found {len(gif_files)} GIF(s) in folder: {folder}")
 
@@ -86,7 +93,7 @@ def cycle_gifs(folder=os.path.join(os.path.dirname(__file__), "..", "assets", "g
 def main():
     try:
         while True:
-            cycle_gifs()  # Folder containing .gif files
+            cycle_gifs(default_gif_folder)
     except KeyboardInterrupt:
         print("Program interrupted.")
         clear_leds()

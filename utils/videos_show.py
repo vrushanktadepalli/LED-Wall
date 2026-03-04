@@ -6,6 +6,7 @@ import numpy as np
 
 from env import HEIGHT, WIDTH, Color, clear_leds, strip, video
 
+default_video_folder = os.path.join(os.path.dirname(__file__), "..", "assets", "videos")
 
 def resize_with_aspect_ratio(frame, target_width, target_height):
     h, w = frame.shape[:2]
@@ -66,9 +67,7 @@ def display_video(video_name):
     cap.release()
 
 
-def cycle_videos(
-    video_folder=os.path.join(os.path.dirname(__file__), "..", "assets", "videos")
-):
+def cycle_videos(video_folder=default_video_folder):
     video_files = [f for f in os.listdir(video_folder) if f.lower().endswith(".mp4")]
     if not video_files:
         print("No video files found in 'videos/' folder.")
@@ -80,10 +79,11 @@ def cycle_videos(
 
 
 def main():
-    video_folder = os.path.join(os.path.dirname(__file__), "..", "assets", "videos")
+
     try:
         while True:
-            cycle_videos(video_folder)
+            cycle_videos(default_video_folder)
+
     except KeyboardInterrupt:
         print("Stopped")
         clear_leds()

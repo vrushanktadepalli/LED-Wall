@@ -4,7 +4,7 @@ import time
 from env import HEIGHT, WIDTH, Color, strip
 
 DEFAULT_COLOR = (255, 255, 255)
-# Font dictionary (minimal example, complete it as needed)
+
 # 5x7 Font for LED matrix in Python (dictionary format)
 FONT = {
     " ": [0x00, 0x00, 0x00, 0x00, 0x00],
@@ -23,6 +23,7 @@ FONT = {
     "-": [0x08, 0x08, 0x08, 0x08, 0x08],
     ".": [0x00, 0x60, 0x60, 0x00, 0x00],
     "/": [0x20, 0x10, 0x08, 0x04, 0x02],
+    "\\":[0x02, 0x04, 0x08, 0x10, 0x20],
     "0": [0x3E, 0x51, 0x49, 0x45, 0x3E],
     "1": [0x00, 0x42, 0x7F, 0x40, 0x00],
     "2": [0x72, 0x49, 0x49, 0x49, 0x46],
@@ -136,7 +137,7 @@ def apply_color(bitmap, color):
     return [[color if pixel else (0, 0, 0) for pixel in row] for row in bitmap]
 
 
-def scroll_left(text, color=DEFAULT_COLOR, delay=0.112):
+def scroll_left(text: str, color=DEFAULT_COLOR, delay=0.112):
     """PLays a Text scrolling Left"""
     bitmap = make_text_bitmap(text)
 
@@ -166,7 +167,7 @@ def scroll_left(text, color=DEFAULT_COLOR, delay=0.112):
         time.sleep(delay)
 
 
-def scroll_right(text, color=DEFAULT_COLOR, delay=0.112):
+def scroll_right(text: str, color=DEFAULT_COLOR, delay=0.112):
     """PLays a Text scrolling Right"""
     bitmap = make_text_bitmap(text)
 
@@ -194,7 +195,7 @@ def scroll_right(text, color=DEFAULT_COLOR, delay=0.112):
         time.sleep(delay)
 
 
-def scroll_up(text, color=DEFAULT_COLOR, delay=0.112):
+def scroll_up(text: str, color=DEFAULT_COLOR, delay=0.112):
     """PLays a Text scrolling Up"""
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
@@ -220,7 +221,7 @@ def scroll_up(text, color=DEFAULT_COLOR, delay=0.112):
         time.sleep(delay)
 
 
-def scroll_down(text, color=DEFAULT_COLOR, delay=0.112):
+def scroll_down(text: str, color=DEFAULT_COLOR, delay=0.112):
     """PLays a Text scrolling Down"""
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
@@ -246,10 +247,8 @@ def scroll_down(text, color=DEFAULT_COLOR, delay=0.112):
         time.sleep(delay)
 
 
-def blink_text(
-    text, color=DEFAULT_COLOR, blink_times=5, on_duration=0.4, off_duration=0.2
-):
-    """PLays a Text blinking"""
+def blink_text(text: str, color=DEFAULT_COLOR, blink_times=5, on_duration=0.4, off_duration=0.2):
+    """Plays a Text blinking"""
     bitmap = make_text_bitmap(text)
     text_height = len(bitmap)
     text_width = len(bitmap[0]) if bitmap else 0
@@ -273,7 +272,7 @@ def blink_text(
         time.sleep(off_duration)
 
 
-def typewriter_text(text, color=DEFAULT_COLOR, delay=0.1):
+def typewriter_text(text: str, color=DEFAULT_COLOR, delay=0.1):
     """PLays a Text with a typewriter effect"""
     bitmap = make_text_bitmap(text)
     frame = [[(0, 0, 0) for _ in range(WIDTH)] for _ in range(HEIGHT)]
@@ -294,9 +293,7 @@ def typewriter_text(text, color=DEFAULT_COLOR, delay=0.1):
     time.sleep(0.4)
 
 
-def wave_text(
-    text, color=DEFAULT_COLOR, delay=0.06, amplitude=2, wavelength=2, cycles=3
-):
+def wave_text(text: str, color=DEFAULT_COLOR, delay=0.06, amplitude=2, wavelength=2, cycles=3):
     """PLays a Text with a wave effect"""
     char_height = 7
     char_width = 6  # 5 + 1 space

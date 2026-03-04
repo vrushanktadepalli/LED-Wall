@@ -42,8 +42,6 @@ def set_brightness(value: int) -> None:
     strip.setBrightness(value)
     strip.show()
 
-set_brightness(LED_BRIGHTNESS)
-
 def run_once(fn: Callable) -> None:
     try:
         fn()
@@ -59,3 +57,5 @@ def run_forever(fn: Callable, endfn: None|Callable = None) -> None:
         if endfn is not None:
             run_once(endfn)
         clear_leds()
+
+set_brightness(LED_BRIGHTNESS)

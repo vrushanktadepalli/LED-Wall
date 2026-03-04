@@ -4,14 +4,13 @@ import time
 from env import HEIGHT, WIDTH, Color, clear_leds, strip
 
 
-# --- Helper: 2D → 1D (zigzag mapping) ---
 def convert_2d_to_1d(frame_2d):
     leds = []
     for y in range(HEIGHT):
-        if y % 2 == 0:  # even row (left→right)
+        if y % 2 == 0:
             for x in range(WIDTH):
                 leds.append(frame_2d[y][x])
-        else:  # odd row (right→left)
+        else:
             for x in reversed(range(WIDTH)):
                 leds.append(frame_2d[y][x])
     return leds
@@ -19,8 +18,12 @@ def convert_2d_to_1d(frame_2d):
 
 # --- Matrix Rain Effect ---
 def matrix_rain(strip=strip, frames=250, delay=0.05):
-    rain = [random.randint(0, HEIGHT - 1) for _ in range(WIDTH)]
-    rwid = [random.randint(2, 5) for _ in range(WIDTH)]
+    # rain = [random.randint(0, HEIGHT - 1) for _ in range(WIDTH)]
+    # rwid = [random.randint(2, 5) for _ in range(WIDTH)]
+
+    # Pseudo-random numbers
+    rain = [7, 12, 15, 1, 0, 11, 9, 4, 5, 14, 10, 2, 8, 3, 6, 13, 4, 9, 0, 5, 14, 1, 12, 2, 6, 10, 7, 3, 8, 11, 13, 15]
+    tail = [3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4, 3, 5, 2, 4]
 
     for _ in range(frames):
         # Start with black frame
@@ -34,7 +37,7 @@ def matrix_rain(strip=strip, frames=250, delay=0.05):
                 frame[y][x] = (0, 255, 0)
 
             # Trail
-            for i in range(1, rwid[x]):
+            for i in range(1, tail[x]):
                 if y - i >= 0:
                     g = max(0, 255 // ((i + 2) * (i + 2)))
                     frame[y - i][x] = (0, g, 0)
@@ -43,7 +46,7 @@ def matrix_rain(strip=strip, frames=250, delay=0.05):
             rain[x] += 1
             if rain[x] >= HEIGHT:
                 rain[x] = 0
-                rwid[x] = random.randint(2, 5)
+                tail[x] = random.randint(2, 5)
 
         # Convert 2D → 1D
         led_data = convert_2d_to_1d(frame)
