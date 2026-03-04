@@ -171,3 +171,8 @@ Possible future additions:
 ## Author
 
 Project created for controlling a Raspberry Pi based LED wall display.
+---
+
+## License
+
+This project is licensed under the MIT License.
